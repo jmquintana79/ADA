@@ -64,6 +64,23 @@ class ADA:
         # return
         Col.stats = stats
 
+    def calculate_stats_cat(self, name):
+       # get columnt instance
+        Col = self.get_column(name)
+        # type validation
+        assert Col.type == 'categorical', 'only possible categorical columns.'
+        # get data
+        data = self.get_data(name)
+        # initialize
+        stats = dict()
+        stats['count'] = dict()
+        # count categorical values
+        cat, count = np.unique(data, return_index=False, return_inverse=False, return_counts=True, axis=None)
+        for icat, icount in zip(cat, count):
+            stats['count'][icat] = icount
+        # return
+        Col.stats = stats
+
 
 class Columns():
     pass
