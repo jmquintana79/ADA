@@ -30,7 +30,7 @@ class ADA:
         # create columns instances
         for name in self.df.columns:
             col = Column(name)
-            col.type = 'num' if name in self.num_columns else 'cat'
+            col.type = 'numerical' if name in self.num_columns else 'categorical'
             setattr(self.columns, name, col)
         
     #def get_column_names(self):
@@ -46,7 +46,7 @@ class ADA:
         # get columnt instance
         Col = self.get_column(name)
         # type validation
-        assert Col.type == 'num', 'only possible numerical columns.'
+        assert Col.type == 'numerical', 'only possible numerical columns.'
         # get data
         data = self.get_column_data(name)
         # initialize
@@ -75,6 +75,13 @@ class Column():
         self.name = name
         self.type = None
         self.stats = None
+        
+    def __str__(self):
+        print('\n"%s" (%s)'%(self.name, self.type))
+        print('Stats:')
+        for k,v in self.stats.items():
+            print('\t%s = %s'%(k,v))
+        return '\n'
         
     
 
