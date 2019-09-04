@@ -7,6 +7,9 @@ Created on Tue Sep  3 09:16:41 2019
 """
 
 from functions import load_scikit_dataset, clean_string
+import numpy as np
+from scipy.stats import kurtosis, skew
+
     
 class ADA:
     
@@ -30,13 +33,38 @@ class ADA:
             col.type = 'num' if name in self.num_columns else 'cat'
             setattr(self.columns, name, col)
         
-    def get_column_names(self):
-        return list(self.columns.__dict__.keys())
+    #def get_column_names(self):
+    #    return list(self.columns.__dict__.keys())
         
+    def get_column(self, name):
+        return getattr(self.columns, name)
+    
     def get_column_data(self, name):
         return self.df[name].tolist()
-      
-        
+    
+    def calculate_stats_num(self, name, per = [5,25,50,75,95]):
+        # get columnt instance
+        Col = self.get_column(name)
+        # type validation
+        assert Col.type == 'num', 'only possible numerical columns.'
+        # get data
+        data = self.get_column_data(name)
+        # initialize
+        stats = dict()
+        # calculate statistics
+        stats['mean'] = np.mean(data)
+        stats['median'] = np.median(data)
+        stats['std'] = np.std(data)
+        stats['min'] = np.min(data)
+        stats['max'] = np.max(data)
+        stats['skew'] = skew(data)
+        stats['kurtosis'] = kurtosis(data)
+        for ip in per:
+            stats['per%s'%ip] = np.percentile(data, ip)
+        # return
+        Col.stats = stats
+
+
 class Columns():
     pass
 
@@ -46,9 +74,11 @@ class Column():
     def __init__(self, name):
         self.name = name
         self.type = None
+        self.stats = None
         
-    def say_hi(self):
-        print("Soy Column",self.df.head()) 
+    
+
+
 
     
 # %%
