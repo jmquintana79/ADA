@@ -13,21 +13,33 @@ class ADA:
     def __init__(self, df, depth = 'all'):
         self.df = df
         self.depth = depth
-        self.columns = dict()
+        #self.columns = dict()
+        self.columns = Columns()
         
-        for col in self.df.columns:
-            self.columns[col] = Column(col)
+        for name in self.df.columns:
+            name_modif = name.replace(' ', '_')
+            self.df.rename(columns={name: name_modif}, inplace=True)
+            col = Column(name_modif)
+            col.type = self.df.dtypes.to_dict()[name_modif] 
+            setattr(self.columns, name_modif, col)
         
-    def say_hi(self):
-        print("Soy ADA",self.df.head())
+    def get_column_names(self):
+        return list(self.columns.__dict__.keys())
         
+    def get_column_data(self, name):
+        return self.df[name].tolist()
+      
+        
+class Columns():
+    pass
 
+        
     
-class Column(ADA):
+class Column():
     def __init__(self, name):
         self.name = name
+        self.type = None
         
-    
     def say_hi(self):
         print("Soy Column",self.df.head()) 
 
