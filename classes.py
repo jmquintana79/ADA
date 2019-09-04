@@ -74,10 +74,15 @@ class ADA:
         # initialize
         stats = dict()
         stats['count'] = dict()
+        stats['probability'] = dict()
+        
         # count categorical values
         cat, count = np.unique(data, return_index=False, return_inverse=False, return_counts=True, axis=None)
         for icat, icount in zip(cat, count):
             stats['count'][icat] = icount
+            stats['probability'][icat] = icount / len(data)
+        # set a new attributes with the cagories
+        setattr(Col, 'categories', list(cat))
         # return
         Col.stats = stats
 
