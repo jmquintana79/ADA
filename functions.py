@@ -28,3 +28,14 @@ def load_scikit_dataset(name:str = 'iris')->'df':
     df['target'] = [ data.target_names[i] for i in data.target]
     # return    
     return df
+
+## clean a string (remove symbols)
+def clean_string(string:str)->str:
+    """
+    Clean a string removing symbols, capitalize each word and join.
+    string -- string to be cleaned.
+    return -- cleaned string.
+    """
+    string_cleaned = string.translate(str.maketrans(' ', ' ', '!"“”#$%&\'()*+/:;<=>?@[\\]^_`{|}~'))
+    return ''.join([i.capitalize() for i in string_cleaned.split(' ')])
+ 
