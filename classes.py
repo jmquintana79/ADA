@@ -8,6 +8,7 @@ Created on Tue Sep  3 09:16:41 2019
 
 from functions import load_scikit_dataset, clean_string
 import numpy as np
+import pandas as pd
 from scipy.stats import kurtosis, skew
 
     
@@ -41,6 +42,25 @@ class ADA:
     
     def get_data(self, names:'str or list'):
         return self.df[names].values
+    
+    def num2cat_binning(self, name, nbins = 10):
+         # get columnt instance
+        Col = self.get_column(name)
+        # type validation
+        assert Col.type == 'numerical', 'only possible numerical columns.'
+        # get data
+        data_num = self.get_data(name)
+        # calculate bins
+        bins = np.linspace(np.min(data_num), np.max(data_num), nbins+1, endpoint=True)
+        labels = np.arange(1,nbins+1,1)
+        data_cat = pd.cut(data_num, bins = bins, labels = labels)
+        # create a new column
+        name_new = name+'_cat%s'%nbins
+        col = Column(name_new)
+        col.type = 'categorical'
+        col.data = data_cat
+        setattr(self.columns, name_new, col)
+        
     
     def calculate_stats_num(self, name, per = [5,25,50,75,95]):
         # get columnt instance
