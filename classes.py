@@ -25,8 +25,8 @@ class ADA:
             self.df.rename(columns={name: clean_string(name)}, inplace=True)
             
         # collect column names per type
-        self.num_columns = self.df.select_dtypes(include=['float64']).columns.values         # numerical columns
-        self.cat_columns = self.df.select_dtypes(include=['object', 'int64']).columns.values # categorical columns
+        self.num_columns = self.df.select_dtypes(include=['float64']).columns.tolist()         # numerical columns
+        self.cat_columns = self.df.select_dtypes(include=['object', 'int64']).columns.tolist() # categorical columns
 
         # create columns instances
         for name in self.df.columns:
@@ -44,7 +44,9 @@ class ADA:
         return self.df[names].values
     
     def num2cat_binning(self, name, nbins = 10):
-         # get columnt instance
+        # create new column name
+        name_new = name+'_cat%s'%nbins
+        # get columnt instance
         Col = self.get_column(name)
         # type validation
         assert Col.type == 'numerical', 'only possible numerical columns.'
@@ -53,13 +55,13 @@ class ADA:
         # calculate bins
         bins = np.linspace(np.min(data_num), np.max(data_num), nbins+1, endpoint=True)
         labels = np.arange(1,nbins+1,1)
-        data_cat = pd.cut(data_num, bins = bins, labels = labels)
+        self.df[name_new] = pd.cut(data_num, bins = bins, labels = labels)
         # create a new column
-        name_new = name+'_cat%s'%nbins
         col = Column(name_new)
         col.type = 'categorical'
-        col.data = data_cat
         setattr(self.columns, name_new, col)
+        # save new column name
+        self.cat_columns.append(name_new)
         
     
     def calculate_stats_num(self, name, per = [5,25,50,75,95]):
