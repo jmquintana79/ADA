@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
 Created on Tue Sep  3 09:16:41 2019
@@ -7,9 +6,10 @@ Created on Tue Sep  3 09:16:41 2019
 """
 
 from functions import load_scikit_dataset, clean_string
+import stats
 import numpy as np
 import pandas as pd
-from scipy.stats import kurtosis, skew
+
 
     
 class ADA:
@@ -72,19 +72,19 @@ class ADA:
         # get data
         data = self.get_data(name)
         # initialize
-        stats = dict()
+        dstats = dict()
         # calculate statistics
-        stats['mean'] = np.mean(data)
-        stats['median'] = np.median(data)
-        stats['std'] = np.std(data)
-        stats['min'] = np.min(data)
-        stats['max'] = np.max(data)
-        stats['skew'] = skew(data)
-        stats['kurtosis'] = kurtosis(data)
+        dstats['mean'] = stats.mean(data)
+        dstats['median'] = stats.median(data)
+        dstats['std'] = stats.std(data)
+        dstats['min'] = stats.min(data)
+        dstats['max'] = stats.max(data)
+        dstats['skew'] = stats.skew(data)
+        dstats['kurtosis'] = stats.kurtosis(data)
         for ip in per:
-            stats['per%s'%ip] = np.percentile(data, ip)
+            dstats['per%s'%ip] = stats.percentile(data, ip)
         # return
-        Col.stats = stats
+        Col.stats = dstats
 
     def calculate_stats_cat(self, name):
        # get columnt instance
@@ -94,19 +94,19 @@ class ADA:
         # get data
         data = self.get_data(name)
         # initialize
-        stats = dict()
-        stats['count'] = dict()
-        stats['probability'] = dict()
+        dstats = dict()
+        dstats['count'] = dict()
+        dstats['probability'] = dict()
         
         # count categorical values
         cat, count = np.unique(data, return_index=False, return_inverse=False, return_counts=True, axis=None)
         for icat, icount in zip(cat, count):
-            stats['count'][icat] = icount
-            stats['probability'][icat] = icount / len(data)
+            dstats['count'][icat] = icount
+            dstats['probability'][icat] = icount / len(data)
         # set a new attributes with the cagories
         setattr(Col, 'categories', list(cat))
         # return
-        Col.stats = stats
+        Col.stats = dstats
 
 
 class Columns():
