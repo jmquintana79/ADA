@@ -5,7 +5,7 @@ Created on Tue Sep  3 09:16:41 2019
 @author: admin
 """
 
-from functions import load_scikit_dataset, clean_string
+from functions import clean_string
 import stats
 import numpy as np
 import pandas as pd
@@ -129,10 +129,3 @@ class Column():
         
     
 
-
-
-    
-# %%
-
-df = load_scikit_dataset()      
-ada = ADA(df)
